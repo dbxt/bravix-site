@@ -80,3 +80,8 @@ section{border-top:1px solid transparent;border-image:linear-gradient(90deg,tran
 footer{overflow:hidden;position:relative}
 .foot-car{width:130px;margin:0 auto .75rem;opacity:.9}
 @media(max-width:700px){.side-car{position:static;margin:0 auto 1rem;width:70%}}
+
+.logo{display:flex;align-items:center;gap:.6rem}
+.logo img{width:40px;height:40px;filter:drop-shadow(0 0 8px rgba(79,209,232,.6))}
+.hero-logo{display:block;width:min(260px,60%);height:auto;margin:0 auto 1.5rem;filter:drop-shadow(0 0 30px rgba(47,120,255,.6));animation:hover 5s ease-in-out infinite}
+@media(max-width:600px){.logo{font-size:.8rem;letter-spacing:1px}}
