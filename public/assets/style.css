@@ -85,3 +85,18 @@ footer{overflow:hidden;position:relative}
 .logo img{width:40px;height:40px;filter:drop-shadow(0 0 8px rgba(79,209,232,.6))}
 .hero-logo{display:block;width:min(260px,60%);height:auto;margin:0 auto 1.5rem;filter:drop-shadow(0 0 30px rgba(47,120,255,.6));animation:hover 5s ease-in-out infinite}
 @media(max-width:600px){.logo{font-size:.8rem;letter-spacing:1px}}
+
+/* Responsive nav: no horizontal scroll on small screens */
+html,body{overflow-x:hidden}
+nav{gap:.75rem}
+.logo{min-width:0;white-space:nowrap}
+@media(max-width:600px){
+  nav{height:auto;min-height:56px;flex-wrap:wrap;justify-content:center;padding:.5rem 0;row-gap:.25rem}
+  nav ul{gap:1.25rem;justify-content:center;flex-wrap:wrap}
+  .logo img{width:32px;height:32px}
+}
+@media(max-width:380px){
+  .logo{font-size:.7rem;letter-spacing:.5px}
+  nav ul{gap:.9rem}
+  nav ul a{letter-spacing:1px}
+}
