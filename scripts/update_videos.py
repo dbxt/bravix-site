@@ -37,7 +37,18 @@ def grid(vs):
     return '        <div class="grid">\n' + "\n".join(card(v) for v in vs) + "\n        </div>"
 
 def main():
-    vids = fetch()
+    import time
+    vids = None
+    for _ in range(4):
+        try:
+            vids = fetch()
+            break
+        except Exception as e:
+            print("feed fetch failed:", e)
+            time.sleep(5)
+    if vids is None:
+        print("feed unavailable; keeping existing videos")
+        return
     if not vids:
         sys.exit("empty feed; leaving page unchanged")
     top = sorted(vids, key=lambda v: v["views"], reverse=True)[:4]
