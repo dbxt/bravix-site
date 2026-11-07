@@ -100,3 +100,17 @@ nav{gap:.75rem}
   nav ul{gap:.9rem}
   nav ul a{letter-spacing:1px}
 }
+
+/* Hamburger menu (mobile) */
+.menu-toggle{display:none;background:none;border:0;padding:.6rem;cursor:pointer;flex-direction:column;gap:5px;margin-left:auto}
+.menu-toggle span{display:block;width:24px;height:2px;background:var(--text);transition:transform .2s,opacity .2s}
+header.open .menu-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+header.open .menu-toggle span:nth-child(2){opacity:0}
+header.open .menu-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:700px){
+  nav{height:64px;min-height:0;flex-wrap:nowrap;justify-content:space-between;padding:0;position:relative}
+  .menu-toggle{display:flex}
+  nav ul{display:none;position:absolute;top:100%;left:-1.5rem;right:-1.5rem;flex-direction:column;gap:0;background:rgba(7,13,18,.97);border-bottom:1px solid var(--line)}
+  header.open nav ul{display:flex}
+  nav ul li a{display:block;padding:1rem 1.5rem;border-top:1px solid var(--line)}
+}

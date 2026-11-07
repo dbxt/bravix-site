@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="stylesheet" href="/assets/style.css?v=future9" />
+  <link rel="stylesheet" href="/assets/style.css?v=hamburger1" />
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -27,7 +27,8 @@
     <div class="wrap">
       <nav>
         <a class="logo" href="#top"><img src="/assets/logo-sm.webp" alt="" width="40" height="40" />BRAVIX<span>.</span>EDITS</a>
-        <ul>
+        <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
+        <ul id="nav-menu">
           <li><a href="#work">Work</a></li>
           <li><a href="#services">About</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -94,6 +95,13 @@
   </main>
 
   <footer><div class="wrap"><img class="car foot-car" src="/assets/car-indigo.webp" alt="" width="576" height="292" loading="lazy" />© <span id="y">2026</span> Bravix Edits</div></footer>
+  <script>
+  (function(){var h=document.querySelector('header'),b=h.querySelector('.menu-toggle');
+  function set(o){h.classList.toggle('open',o);b.setAttribute('aria-expanded',o)}
+  b.addEventListener('click',function(){set(!h.classList.contains('open'))});
+  h.querySelectorAll('nav ul a').forEach(function(a){a.addEventListener('click',function(){set(false)})});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});})();
+  </script>
   <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
 </body>
 </html>
