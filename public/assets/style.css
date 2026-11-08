@@ -1,3 +1,6 @@
+@font-face{font-family:"Orbitron";font-style:normal;font-weight:500 900;font-display:swap;src:url(/assets/fonts/orbitron.woff2) format("woff2")}
+@font-face{font-family:"Rajdhani";font-style:normal;font-weight:500;font-display:swap;src:url(/assets/fonts/rajdhani-500.woff2) format("woff2")}
+@font-face{font-family:"Rajdhani";font-style:normal;font-weight:600;font-display:swap;src:url(/assets/fonts/rajdhani-600.woff2) format("woff2")}
 :root{--bg:#070d12;--panel:#0e1820;--line:#1c2f3b;--text:#eaf6fa;--muted:#7f9aa8;--accent:#4fd1e8;--max:1100px}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Regenerate the video grids in public/index.html from the channel RSS feed."""
-import html, re, sys, urllib.request
+import html, json, re, sys, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
@@ -20,6 +20,7 @@ def fetch():
         vids.append({
             "id": e.findtext("y:videoId", "", NS), "title": title,
             "date": datetime.fromisoformat(e.findtext("a:published", "", NS)),
+            "desc": (e.findtext("m:group/m:description", "", NS) or "").strip(),
             "views": int(stats.get("views", 0)) if stats is not None else 0})
     return vids
 
@@ -30,11 +31,43 @@ def card(v):
     t = html.escape(v["title"])
     meta = f'{fmt(v["views"])} views · {v["date"]:%b %-d, %Y}'
     return (f'          <a class="card" href="https://www.youtube.com/watch?v={v["id"]}" target="_blank" rel="noopener">'
-            f'<div class="thumb"><img src="https://i.ytimg.com/vi/{v["id"]}/hqdefault.jpg" alt="{t}" loading="lazy" />'
+            f'<div class="thumb"><img src="https://i.ytimg.com/vi/{v["id"]}/hqdefault.jpg" alt="{t} - Rocket League clip by Bravix Edits" width="480" height="360" loading="lazy" decoding="async" />'
             f'<span class="play">▶</span></div><div class="body"><h3>{t}</h3><p>{meta}</p></div></a>')
 
 def grid(vs):
     return '        <div class="grid">\n' + "\n".join(card(v) for v in vs) + "\n        </div>"
+
+SITE = "https://bravixedits.com/"
+
+def jsonld(vids):
+    items = []
+    for i, v in enumerate(vids, 1):
+        desc = re.sub(r"\s+", " ", v["desc"])[:300] or f'{v["title"]} - Rocket League clip by Bravix Edits'
+        items.append({"@type": "ListItem", "position": i, "item": {
+            "@type": "VideoObject", "name": v["title"], "description": desc,
+            "thumbnailUrl": f'https://i.ytimg.com/vi/{v["id"]}/hqdefault.jpg',
+            "uploadDate": v["date"].isoformat(),
+            "contentUrl": f'https://www.youtube.com/watch?v={v["id"]}',
+            "embedUrl": f'https://www.youtube.com/embed/{v["id"]}',
+            "url": f'https://www.youtube.com/watch?v={v["id"]}',
+            "interactionStatistic": {"@type": "InteractionCounter",
+                "interactionType": {"@type": "WatchAction"}, "userInteractionCount": v["views"]}}})
+    graph = [
+        {"@type": "WebSite", "@id": SITE + "#website", "url": SITE, "name": "Bravix Edits",
+         "description": "Rocket League highlights, clips and edits.", "inLanguage": "en",
+         "publisher": {"@id": SITE + "#org"}},
+        {"@type": "Organization", "@id": SITE + "#org", "name": "Bravix Edits", "url": SITE,
+         "logo": {"@type": "ImageObject", "url": SITE + "icon-512.png", "width": 512, "height": 512},
+         "image": SITE + "assets/og.jpg",
+         "sameAs": ["https://www.youtube.com/@BravixEdits", "https://discord.gg/yCK939ZSa"]},
+        {"@type": "WebPage", "@id": SITE + "#webpage", "url": SITE, "name": "Bravix Edits | Rocket League Clips, Highlights & Edits",
+         "isPartOf": {"@id": SITE + "#website"}, "about": {"@id": SITE + "#org"},
+         "primaryImageOfPage": {"@type": "ImageObject", "url": SITE + "assets/og.jpg"}, "inLanguage": "en"},
+        {"@type": "ItemList", "name": "Bravix Edits Rocket League videos", "itemListElement": items},
+    ]
+    data = json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, separators=(",", ":"))
+    data = data.replace("</", "<\\/")
+    return ('<!--JSONLD:START--><script type="application/ld+json">' + data + '</script><!--JSONLD:END-->')
 
 def main():
     import time
@@ -63,7 +96,16 @@ def main():
     new, n = re.subn(r"<!-- VIDEOS:START.*?<!-- VIDEOS:END -->", lambda m: block, src, flags=re.S)
     if n != 1:
         sys.exit("markers not found")
+    ld = jsonld(top + latest)
+    if "<!--JSONLD:START-->" in new:
+        new = re.sub(r"<!--JSONLD:START-->.*?<!--JSONLD:END-->", lambda m: ld, new, flags=re.S)
+    else:
+        new = new.replace("<!--JSONLD-->", ld)
     if new != src:
+        today = datetime.now().strftime("%Y-%m-%d")
+        open("public/sitemap.xml", "w").write(
+            '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            f'  <url><loc>{SITE}</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>\n</urlset>\n')
         open(INDEX, "w", encoding="utf8").write(new)
         print("updated")
     else:
