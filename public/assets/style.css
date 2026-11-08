@@ -114,3 +114,6 @@ header.open .menu-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45
   header.open nav ul{display:flex}
   nav ul li a{display:block;padding:1rem 1.5rem;border-top:1px solid var(--line)}
 }
+#background .wrap{max-width:760px}
+#background h3{color:var(--accent);margin-bottom:1rem}
+#background p{color:var(--text);margin-bottom:1rem;line-height:1.7}
